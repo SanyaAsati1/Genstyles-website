@@ -868,9 +868,9 @@
 </head>
 <body>
 
-  <!-- ==================
+  <!-- 
        HEADER
-       ================== -->
+        -->
   <header>
     <div class="logo">GenStyles</div>
 
@@ -896,9 +896,9 @@
 
   <div class="page-wrapper">
 
-    <!-- ==================
+    <!-- 
          SIDEBAR
-         ================== -->
+        -->
     <aside class="sidebar" id="sidebar">
 
       <div class="sidebar-section">
@@ -1298,20 +1298,17 @@
   <!-- FOOTER -->
   <footer>
     <div class="logo">GenStyles</div>
-    <span>© 2025 GenStyles. All rights reserved.</span>
-    <span>Made with 🖤</span>
+    <span>© 2026 GenStyles. All rights reserved.</span>
   </footer>
 
 
-  <!-- ==================
-       JAVASCRIPT
-       ================== -->
+  <!-- 
+       JAVASCRIPT -->
   <script>
 
-    // ==========================================
+    // 
     // 1. HAMBURGER MENU (open/close sidebar)
-    // ==========================================
-
+    // 
     // Get elements by their ID
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const sidebar      = document.getElementById('sidebar');
@@ -1333,10 +1330,9 @@
     });
 
 
-    // ==========================================
+    //
     // 2. HERO CAROUSEL
-    // ==========================================
-
+    // 
     let currentSlide = 0;      // which slide we're on (0, 1, or 2)
     const totalSlides = 3;
 
@@ -1372,10 +1368,9 @@
     }, 4000);
 
 
-    // ==========================================
+    // 
     // 3. PRODUCT ROW SCROLL
-    // ==========================================
-
+    // 
     function scrollProducts(direction) {
       const row = document.getElementById('productRow');
       // scrollBy moves the scroll position by a given amount
@@ -1384,9 +1379,9 @@
     }
 
 
-    // ==========================================
+    // 
     // 4. CTA BUTTONS (Container 5)
-    // ==========================================
+    // 
 
     function handleBtnA() {
       const msg = document.getElementById('btnMessage');
@@ -1404,9 +1399,9 @@
     }
 
 
-    // ==========================================
+    // 
     // 5. ADD TO CART (updates header count)
-    // ==========================================
+    // 
 
     let cartItems = 0;
 
@@ -1417,9 +1412,7 @@
     }
 
 
-    // ==========================================
-    // 6. DEAL COUNTDOWN TIMERS
-    // ==========================================
+    // 6. DEAL COUNTDOWN TIMERS//
 
     // Get all elements with class "timer"
     const timers = document.querySelectorAll('.timer');
