@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GenStyles - Premium Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+
+  <style>
+
+    /*RESET & BASE STYLES */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #121212;
+      color: #f0f0f0;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* CSS VARIABLES
+       (easy to change colors from one place) */
+    :root {
+      --primary: #f0c040;      /* yellow accent */
+      --bg-dark: #121212;      /* main background */
+      --bg-card: #1e1e1e;      /* card background */
+      --bg-sidebar: #181818;   /* sidebar background */
+      --border: #2e2e2e;       /* border color */
+      --text: #f0f0f0;         /* main text */
+      --muted: #888888;        /* grey text */
+      --header-height: 60px;
+      --sidebar-width: 220px;
+    }
+
+    /* HEADER*/
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--header-height);
+      background-color: #181818;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 1px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-right a {
+      font-size: 0.85rem;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+
+    .header-right a:hover {
+      color: var(--primary);
+    }
+
+    /* Cart icon with item count */
+    .cart-icon {
+      position: relative;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -6px;
+      right: -8px;
+      background: var(--primary);
+      color: #000;
+      font-size: 0.6rem;
+      font-weight: 700;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Hamburger button - only shows on mobile */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background-color: var(--text);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    /* Animate hamburger to X when open */
+    .hamburger.active span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+    .hamburger.active span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* PAGE LAYOUT (sidebar + main side by side)*/
+    .page-wrapper {
+      display: flex;
+      margin-top: var(--header-height);
+      min-height: calc(100vh - var(--header-height));
+    }
+
+    /* SIDEBAR*/
+    .sidebar {
+      width: var(--sidebar-width);
+      background-color: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
+      padding: 24px 16px;
+      position: fixed;
+      top: var(--header-height);
+      left: 0;
+      height: calc(100vh - var(--header-height));
+      overflow-y: auto;
+    }
+
+    .sidebar-section {
+      margin-bottom: 28px;
+    }
+
+    .sidebar-title {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .sidebar-link {
+      display: block;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 2px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .sidebar-link:hover,
+    .sidebar-link.active {
+      background-color: var(--bg-card);
+      color: var(--text);
+    }
+
+    .sidebar-link.active {
+      border-left: 3px solid var(--primary);
+      color: var(--primary);
+    }
+
+    /* Filter checkboxes/radios in sidebar */
+    .filter-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      padding: 5px 0;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .filter-option:hover { color: var(--text); }
+    .filter-option input { accent-color: var(--primary); cursor: pointer; }
+
+    /* Dark overlay behind sidebar on mobile */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 90;
+    }
+
+    .overlay.show {
+      display: block;
+    }
+
+    /* MAIN CONTENT AREA */
+    .main-content {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      padding: 28px 24px;
+    }
+
+    /* SHARED CARD STYLES */
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .tag {
+      background-color: var(--primary);
+      color: #000;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+    }
+
+    /*CONTAINER 1 — CAROUSEL */
+    .carousel-wrapper {
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* The track holds all slides side by side */
+    .carousel-track {
+      display: flex;
+      transition: transform 0.5s ease;
+    }
+
+    .carousel-slide {
+      min-width: 100%;
+      padding: 40px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .slide-1 { background: linear-gradient(135deg, #1a1a2e, #16213e); }
+    .slide-2 { background: linear-gradient(135deg, #1a1000, #2e2000); }
+    .slide-3 { background: linear-gradient(135deg, #0f1f0f, #1a2e1a); }
+
+    .slide-label {
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--primary);
+    }
+
+    .slide-title {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .slide-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      max-width: 400px;
+    }
+
+    .slide-btn {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 10px 24px;
+      background-color: var(--primary);
+      color: #000;
+      font-weight: 600;
+      font-size: 0.82rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      width: fit-content;
+      transition: opacity 0.2s;
+    }
+
+    .slide-btn:hover {
+      opacity: 0.85;
+    }
+
+    /* Prev / Next arrows */
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .carousel-btn:hover {
+      background: var(--primary);
+      color: #000;
+    }
+
+    .carousel-btn.prev { left: 12px; }
+    .carousel-btn.next { right: 12px; }
+
+    /* Dots at bottom of carousel */
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 0 6px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--border);
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s, width 0.3s;
+    }
+
+    .dot.active {
+      background-color: var(--primary);
+      width: 20px;
+      border-radius: 4px;
+    }
+
+    /*CONTAINER 2 — INFO / TEXT BLOCK*/
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 24px;
+      gap: 20px;
+    }
+
+    .info-item {
+      text-align: center;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: border-color 0.2s;
+    }
+
+    .info-item:hover {
+      border-color: var(--primary);
+    }
+
+    .info-icon {
+      font-size: 1.6rem;
+      margin-bottom: 8px;
+    }
+
+    .info-item h3 {
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .info-item p {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* CONTAINER 3 — PRODUCT SLIDER (with arrows) */
+    .product-area {
+      padding: 20px;
+    }
+
+    /* Scrollable row of product cards */
+    .product-row {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      padding-bottom: 8px;
+      /* hide scrollbar visually */
+      scrollbar-width: none;
+    }
+
+    .product-row::-webkit-scrollbar {
+      display: none;
+    }
+
+    .product-card {
+      min-width: 170px;
+      background-color: #252525;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      flex-shrink: 0;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary);
+    }
+
+    .product-thumb {
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      background-color: #2a2a2a;
+    }
+
+    .product-body {
+      padding: 12px;
+    }
+
+    .product-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .product-category {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .product-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .product-price {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .add-to-cart {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .add-to-cart:hover {
+      background-color: var(--primary);
+      color: #000;
+    }
+
+    /* Left/Right scroll buttons */
+    .slider-controls {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .slider-btn {
+      background-color: #252525;
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+
+    .slider-btn:hover {
+      background-color: var(--primary);
+      color: #000;
+    }
+
+    /*CONTAINER 4 — STATIC CONTENT */
+    .static-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .static-left {
+      padding: 32px 28px;
+      border-right: 1px solid var(--border);
+    }
+
+    .section-label {
+      font-size: 0.68rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .static-left h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 14px;
+    }
+
+    .static-left p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 24px;
+    }
+
+    .stat h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat p {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-bottom: 0;
+    }
+
+    .static-right {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .feature-box {
+      padding: 24px 20px;
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+
+    .feature-box:hover {
+      background-color: #252525;
+    }
+
+    /* Remove border on last column and last row */
+    .feature-box:nth-child(2n) { border-right: none; }
+    .feature-box:nth-child(3),
+    .feature-box:nth-child(4) { border-bottom: none; }
+
+    .feature-box .icon { font-size: 1.4rem; margin-bottom: 8px; }
+    .feature-box h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+    .feature-box p  { font-size: 0.75rem; color: var(--muted); line-height: 1.5; }
+
+    /*CONTAINER 5 — BUTTONs */
+    .cta-area {
+      padding: 40px 28px;
+      text-align: center;
+    }
+
+    .cta-area h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .cta-area p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Button A - filled */
+    .btn-primary {
+      padding: 12px 32px;
+      background-color: var(--primary);
+      color: #000;
+      font-size: 0.88rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.85;
+      transform: translateY(-2px);
+    }
+
+    /* Button B - outlined */
+    .btn-outline {
+      padding: 12px 32px;
+      background-color: transparent;
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, transform 0.2s;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    /* Message shown after clicking a button */
+    .btn-message {
+      margin-top: 16px;
+      font-size: 0.85rem;
+      color: var(--primary);
+      min-height: 22px;
+    }
+
+    /*  CONTAINER 6 — DEAL CARDS (animated)*/
+    .deals-area {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      padding: 20px;
+    }
+
+    .deal-card {
+      background-color: #252525;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 16px;
+      transition: transform 0.2s, border-color 0.2s;
+      cursor: pointer;
+    }
+
+    .deal-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary);
+    }
+
+    .deal-live {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #ff5555;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Blinking red dot */
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: #ff5555;
+      animation: blink 1.2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .deal-emoji { font-size: 2.2rem; margin-bottom: 10px; }
+
+    .deal-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .deal-brand {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .deal-price-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .deal-price {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .deal-old {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    .deal-badge {
+      background-color: #ff5555;
+      color: white;
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* Progress bar showing stock sold */
+    .progress-bar {
+      background-color: var(--bg-dark);
+      height: 5px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: var(--primary);
+      border-radius: 4px;
+      transition: width 1s ease;
+    }
+
+    .deal-stock {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    /*FOOTER*/
+    footer {
+      margin-left: var(--sidebar-width);
+      border-top: 1px solid var(--border);
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    footer .logo {
+      font-size: 1rem;
+    }
+
+    /* RESPONSIVE — MOBILE */
+
+    /* On mobile, hide sidebar by default (slide it off screen) */
+    @media (max-width: 768px) {
+
+      .hamburger {
+        display: flex;  /* show hamburger button */
+      }
+
+      .header-right a {
+        display: none; /* hide nav links on mobile */
+      }
+
+      .sidebar {
+        transform: translateX(-100%); /* hide sidebar off screen */
+        transition: transform 0.3s ease;
+        z-index: 95;
+      }
+
+      .sidebar.open {
+        transform: translateX(0); /* slide in when open class is added */
+      }
+
+      .main-content {
+        margin-left: 0; /* full width on mobile */
+        padding: 20px 14px;
+      }
+
+      footer {
+        margin-left: 0;
+        justify-content: center;
+        text-align: center;
+      }
+
+      /* Stack info grid to 1 column */
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* Stack static section */
+      .static-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .static-left {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      /* Stack deals to 1 column */
+      .deals-area {
+        grid-template-columns: 1fr;
+      }
+
+      .slide-title {
+        font-size: 1.4rem;
+      }
+
+      .carousel-slide {
+        padding: 28px 20px;
+      }
+    }
+
+    /* Tablet - 2 column deals */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .deals-area {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- ==================
+       HEADER
+       ================== -->
+  <header>
+    <div class="logo">GenStyles</div>
+
+    <div class="header-right">
+      <a href="#">Home</a>
+      <a href="#">Shop</a>
+      <a href="#">Deals</a>
+      <div class="cart-icon">
+        🛒
+        <span class="cart-count" id="cartCount">0</span>
+      </div>
+      <!-- Hamburger: 3 lines that turn into X on mobile -->
+      <button class="hamburger" id="hamburgerBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Dark overlay (shown when sidebar opens on mobile) -->
+  <div class="overlay" id="overlay"></div>
+
+  <div class="page-wrapper">
+
+    <!-- ==================
+         SIDEBAR
+         ================== -->
+    <aside class="sidebar" id="sidebar">
+
+      <div class="sidebar-section">
+        <div class="sidebar-title">Menu</div>
+        <a href="#" class="sidebar-link active">🏠 Home</a>
+        <a href="#" class="sidebar-link">✨ New Arrivals</a>
+        <a href="#" class="sidebar-link">🔥 Trending</a>
+        <a href="#" class="sidebar-link">💰 Deals</a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-title">Categories</div>
+        <a href="#" class="sidebar-link">👟 Footwear</a>
+        <a href="#" class="sidebar-link">👗 Apparel</a>
+        <a href="#" class="sidebar-link">⌚ Accessories</a>
+        <a href="#" class="sidebar-link">🎧 Electronics</a>
+      </div>
+
+      <!-- Filter: Price -->
+      <div class="sidebar-section">
+        <div class="sidebar-title">Filter by Price</div>
+        <p style="font-size:0.78rem; color:var(--muted); margin-bottom:6px;">
+          Up to: ₹<span id="priceDisplay">5000</span>
+        </p>
+        <input
+          type="range"
+          min="199" max="10000" value="5000"
+          style="width:100%; accent-color:var(--primary);"
+          oninput="document.getElementById('priceDisplay').textContent = Number(this.value).toLocaleString('en-IN')"
+        />
+        <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--muted); margin-top:4px;">
+          <span>₹199</span><span>₹10,000</span>
+        </div>
+      </div>
+
+      <!-- Filter: Rating -->
+      <div class="sidebar-section">
+        <div class="sidebar-title">Customer Rating</div>
+        <label class="filter-option"><input type="radio" name="rating" checked /> ⭐⭐⭐⭐⭐ 5 Star</label>
+        <label class="filter-option"><input type="radio" name="rating" /> ⭐⭐⭐⭐ 4★ & above</label>
+        <label class="filter-option"><input type="radio" name="rating" /> ⭐⭐⭐ 3★ & above</label>
+      </div>
+
+      <!-- Filter: Gender -->
+      <div class="sidebar-section">
+        <div class="sidebar-title">Shopping For</div>
+        <label class="filter-option"><input type="radio" name="gender" checked /> 👨 Men</label>
+        <label class="filter-option"><input type="radio" name="gender" /> 👩 Women</label>
+        <label class="filter-option"><input type="radio" name="gender" /> 🧒 Kids</label>
+        <label class="filter-option"><input type="radio" name="gender" /> 🌈 All / Unisex</label>
+      </div>
+
+      <!-- Filter: GenStyles Prime -->
+      <div class="sidebar-section">
+        <div class="sidebar-title">GenStyles Prime</div>
+        <label class="filter-option">
+          <input type="checkbox" id="primeFilter" />
+          ⚡ Prime Members Only
+        </label>
+        <p style="font-size:0.7rem; color:var(--muted); margin-top:6px; padding-left:4px;">Get extra discounts, early access & free delivery</p>
+      </div>
+
+      <!-- Filter: Availability -->
+      <div class="sidebar-section">
+        <div class="sidebar-title">Availability</div>
+        <label class="filter-option"><input type="checkbox" checked /> In Stock</label>
+        <label class="filter-option"><input type="checkbox" /> Include Out of Stock</label>
+      </div>
+
+      <!-- Filter: Offers -->
+      <div class="sidebar-section">
+        <div class="sidebar-title">Offers</div>
+        <label class="filter-option"><input type="checkbox" /> 🏷️ Bank Offers</label>
+        <label class="filter-option"><input type="checkbox" /> 🔄 No Cost EMI</label>
+        <label class="filter-option"><input type="checkbox" /> 🎁 Free Delivery</label>
+        <label class="filter-option"><input type="checkbox" /> 💥 Deal of the Day</label>
+      </div>
+
+    </aside>
+
+    <!-- ==================
+         MAIN CONTENT
+         ================== -->
+    <main class="main-content">
+
+      <!-- CONTAINER 1: Image Carousel -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Featured Drops</span>
+          <span class="tag">NEW</span>
+        </div>
+
+        <div class="carousel-wrapper">
+          <!-- Track: slides sit side by side, JS moves them left/right -->
+          <div class="carousel-track" id="carouselTrack">
+
+            <div class="carousel-slide slide-1">
+              <div class="slide-label">New Season</div>
+              <h2 class="slide-title">Shadow Runner X</h2>
+              <p class="slide-desc">Premium sneakers built for the streets. Carbon sole, leather upper.</p>
+              <button class="slide-btn" onclick="addToCart('Shadow Runner X')">Shop Now →</button>
+            </div>
+
+            <div class="carousel-slide slide-2">
+              <div class="slide-label">Limited Edition</div>
+              <h2 class="slide-title">Void Series Headphones</h2>
+              <p class="slide-desc">Active noise cancellation. 40-hour battery. Midnight finish.</p>
+              <button class="slide-btn" onclick="addToCart('Void Headphones')">Shop Now →</button>
+            </div>
+
+            <div class="carousel-slide slide-3">
+              <div class="slide-label">Eco Collection</div>
+              <h2 class="slide-title">Forest Edition</h2>
+              <p class="slide-desc">100% sustainable materials. One tree planted per purchase.</p>
+              <button class="slide-btn" onclick="addToCart('Forest Edition')">Shop Now →</button>
+            </div>
+
+          </div>
+
+          <!-- Prev / Next Buttons -->
+          <button class="carousel-btn prev" onclick="moveSlide(-1)">&#8592;</button>
+          <button class="carousel-btn next" onclick="moveSlide(1)">&#8594;</button>
+        </div>
+
+        <!-- Dot indicators -->
+        <div class="carousel-dots" id="dotsContainer">
+          <button class="dot active" onclick="goToSlide(0)"></button>
+          <button class="dot" onclick="goToSlide(1)"></button>
+          <button class="dot" onclick="goToSlide(2)"></button>
+        </div>
+
+      </div>
+
+
+      <!-- CONTAINER 2: Text / Info Block -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Why GenStyles?</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-icon">⚡</div>
+            <h3>Fast Delivery</h3>
+            <p>Same-day shipping on orders before 2PM. Free above ₹999.</p>
+          </div>
+          <div class="info-item">
+            <div class="info-icon">🔒</div>
+            <h3>Secure Checkout</h3>
+            <p>SSL encrypted payments. Cards, UPI, and Net Banking accepted.</p>
+          </div>
+          <div class="info-item">
+            <div class="info-icon">🔄</div>
+            <h3>Easy Returns</h3>
+            <p>30-day hassle-free returns. Full refund guaranteed.</p>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- CONTAINER 3: Product Slider with Arrows -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">New Arrivals</span>
+          <span class="tag">HOT</span>
+        </div>
+        <div class="product-area">
+
+          <!-- Horizontally scrollable row -->
+          <div class="product-row" id="productRow">
+
+            <div class="product-card">
+              <div class="product-thumb">👟</div>
+              <div class="product-body">
+                <div class="product-name">Shadow Runner X</div>
+                <div class="product-category">Footwear</div>
+                <div class="product-footer">
+                  <span class="product-price">₹1,299</span>
+                  <button class="add-to-cart" onclick="addToCart('Shadow Runner X')">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="product-card">
+              <div class="product-thumb">🎧</div>
+              <div class="product-body">
+                <div class="product-name">Void ANC Pro</div>
+                <div class="product-category">Electronics</div>
+                <div class="product-footer">
+                  <span class="product-price">₹5,999</span>
+                  <button class="add-to-cart" onclick="addToCart('Void ANC Pro')">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="product-card">
+              <div class="product-thumb">⌚</div>
+              <div class="product-body">
+                <div class="product-name">Obsidian Watch</div>
+                <div class="product-category">Accessories</div>
+                <div class="product-footer">
+                  <span class="product-price">₹3,499</span>
+                  <button class="add-to-cart" onclick="addToCart('Obsidian Watch')">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="product-card">
+              <div class="product-thumb">🧥</div>
+              <div class="product-body">
+                <div class="product-name">Matte Bomber</div>
+                <div class="product-category">Apparel</div>
+                <div class="product-footer">
+                  <span class="product-price">₹1,999</span>
+                  <button class="add-to-cart" onclick="addToCart('Matte Bomber')">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="product-card">
+              <div class="product-thumb">🕶️</div>
+              <div class="product-body">
+                <div class="product-name">Dark Lens UV</div>
+                <div class="product-category">Accessories</div>
+                <div class="product-footer">
+                  <span class="product-price">₹799</span>
+                  <button class="add-to-cart" onclick="addToCart('Dark Lens UV')">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="product-card">
+              <div class="product-thumb">🎒</div>
+              <div class="product-body">
+                <div class="product-name">Stealth Pack</div>
+                <div class="product-category">Accessories</div>
+                <div class="product-footer">
+                  <span class="product-price">₹1,199</span>
+                  <button class="add-to-cart" onclick="addToCart('Stealth Pack')">+</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Scroll left/right buttons -->
+          <div class="slider-controls">
+            <button class="slider-btn" onclick="scrollProducts(-1)">&#8592;</button>
+            <button class="slider-btn" onclick="scrollProducts(1)">&#8594;</button>
+          </div>
+
+        </div>
+      </div>
+
+
+      <!-- CONTAINER 4: Static Content -->
+      <div class="card">
+        <div class="static-grid">
+
+          <div class="static-left">
+            <div class="section-label">Our Brand</div>
+            <h2>Crafted for the Bold</h2>
+            <p>GenStyles was built for people who refuse to settle. Every product is hand-picked, quality-tested, and approved by our community.</p>
+            <div class="stats-row">
+              <div class="stat">
+                <h3>50K+</h3>
+                <p>Customers</p>
+              </div>
+              <div class="stat">
+                <h3>200+</h3>
+                <p>Products</p>
+              </div>
+              <div class="stat">
+                <h3>4.9★</h3>
+                <p>Rating</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="static-right">
+            <div class="feature-box">
+              <div class="icon">🏭</div>
+              <h4>Direct Factories</h4>
+              <p>Cut the middleman. Factory-direct pricing on all products.</p>
+            </div>
+            <div class="feature-box">
+              <div class="icon">🎨</div>
+              <h4>Exclusive Designs</h4>
+              <p>In-house designed. You won't find these anywhere else.</p>
+            </div>
+            <div class="feature-box">
+              <div class="icon">🌍</div>
+              <h4>Global Shipping</h4>
+              <p>We ship to 80+ countries with real-time tracking.</p>
+            </div>
+            <div class="feature-box">
+              <div class="icon">💬</div>
+              <h4>24/7 Support</h4>
+              <p>Live chat and email support, always available.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <!-- CONTAINER 5: Two Buttons -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Ready to Shop?</span>
+        </div>
+        <div class="cta-area">
+          <h2>Elevate Your Style Today</h2>
+          <p>New drops every Friday. Join thousands of bold shoppers.</p>
+          <div class="btn-group">
+            <!-- Button A -->
+            <button class="btn-primary" onclick="handleBtnA()">🛒 Shop Now</button>
+            <!-- Button B -->
+            <button class="btn-outline" onclick="handleBtnB()">💌 Join Waitlist</button>
+          </div>
+          <!-- Message appears after clicking -->
+          <div class="btn-message" id="btnMessage"></div>
+        </div>
+      </div>
+
+
+      <!-- CONTAINER 6: Animated Deal Cards -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Flash Deals</span>
+          <span class="tag" style="background:#ff5555; color:white;">⏱ LIMITED</span>
+        </div>
+        <div class="deals-area">
+
+          <div class="deal-card">
+            <div class="deal-live">
+              <div class="live-dot"></div>
+              ENDS IN <span class="timer" data-time="7200">02:00:00</span>
+            </div>
+            <div class="deal-emoji">👟</div>
+            <div class="deal-name">Shadow Runner X</div>
+            <div class="deal-brand">GenStyles Footwear</div>
+            <div class="deal-price-row">
+              <span class="deal-price">₹999</span>
+              <span class="deal-old">₹2,999</span>
+              <span class="deal-badge">-33%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 72%"></div>
+            </div>
+            <div class="deal-stock">72% sold — 14 left</div>
+          </div>
+
+          <div class="deal-card">
+            <div class="deal-live">
+              <div class="live-dot"></div>
+              ENDS IN <span class="timer" data-time="17400">04:50:00</span>
+            </div>
+            <div class="deal-emoji">🎧</div>
+            <div class="deal-name">Void ANC Pro</div>
+            <div class="deal-brand">GenStyles Audio</div>
+            <div class="deal-price-row">
+              <span class="deal-price">₹4,999</span>
+              <span class="deal-old">₹7,999</span>
+              <span class="deal-badge">-32%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 55%"></div>
+            </div>
+            <div class="deal-stock">55% sold — 22 left</div>
+          </div>
+
+          <div class="deal-card">
+            <div class="deal-live">
+              <div class="live-dot"></div>
+              ENDS IN <span class="timer" data-time="3900">01:05:00</span>
+            </div>
+            <div class="deal-emoji">🧥</div>
+            <div class="deal-name">Matte Bomber Jacket</div>
+            <div class="deal-brand">GenStyles Apparel</div>
+            <div class="deal-price-row">
+              <span class="deal-price">₹1,599</span>
+              <span class="deal-old">₹2,999</span>
+              <span class="deal-badge">-32%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 88%"></div>
+            </div>
+            <div class="deal-stock">88% sold — 6 left!</div>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="logo">GenStyles</div>
+    <span>© 2025 GenStyles. All rights reserved.</span>
+    <span>Made with 🖤</span>
+  </footer>
+
+
+  <!-- ==================
+       JAVASCRIPT
+       ================== -->
+  <script>
+
+    // ==========================================
+    // 1. HAMBURGER MENU (open/close sidebar)
+    // ==========================================
+
+    // Get elements by their ID
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const sidebar      = document.getElementById('sidebar');
+    const overlay      = document.getElementById('overlay');
+
+    // When hamburger is clicked
+    hamburgerBtn.addEventListener('click', function() {
+      // Toggle means: add class if not there, remove if it is
+      hamburgerBtn.classList.toggle('active');  // animates to X shape
+      sidebar.classList.toggle('open');          // slides sidebar in
+      overlay.classList.toggle('show');          // shows dark overlay
+    });
+
+    // When overlay (dark background) is clicked, close everything
+    overlay.addEventListener('click', function() {
+      hamburgerBtn.classList.remove('active');
+      sidebar.classList.remove('open');
+      overlay.classList.remove('show');
+    });
+
+
+    // ==========================================
+    // 2. HERO CAROUSEL
+    // ==========================================
+
+    let currentSlide = 0;      // which slide we're on (0, 1, or 2)
+    const totalSlides = 3;
+
+    const track = document.getElementById('carouselTrack');
+    const dots  = document.querySelectorAll('.dot');
+
+    function goToSlide(index) {
+      currentSlide = index;
+      // Move the track left by: index * 100%
+      // e.g. slide 0 = 0%, slide 1 = -100%, slide 2 = -200%
+      track.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
+
+      // Update dots: remove active from all, add to current
+      dots.forEach(function(dot, i) {
+        dot.classList.toggle('active', i === currentSlide);
+      });
+    }
+
+    function moveSlide(direction) {
+      // direction is +1 (next) or -1 (prev)
+      let next = currentSlide + direction;
+
+      // Wrap around: if past last slide go to 0, if before first go to last
+      if (next >= totalSlides) next = 0;
+      if (next < 0) next = totalSlides - 1;
+
+      goToSlide(next);
+    }
+
+    // Auto-play: move to next slide every 4 seconds
+    setInterval(function() {
+      moveSlide(1);
+    }, 4000);
+
+
+    // ==========================================
+    // 3. PRODUCT ROW SCROLL
+    // ==========================================
+
+    function scrollProducts(direction) {
+      const row = document.getElementById('productRow');
+      // scrollBy moves the scroll position by a given amount
+      // direction * 200 means: 200px right, or -200px left
+      row.scrollBy({ left: direction * 200, behavior: 'smooth' });
+    }
+
+
+    // ==========================================
+    // 4. CTA BUTTONS (Container 5)
+    // ==========================================
+
+    function handleBtnA() {
+      const msg = document.getElementById('btnMessage');
+      msg.textContent = '✅ Taking you to the shop... enjoy browsing!';
+      msg.style.color = 'var(--primary)';
+      // Clear message after 3 seconds
+      setTimeout(function() { msg.textContent = ''; }, 3000);
+    }
+
+    function handleBtnB() {
+      const msg = document.getElementById('btnMessage');
+      msg.textContent = '💌 You are on the list! Expect drops every Friday.';
+      msg.style.color = '#ff9944';
+      setTimeout(function() { msg.textContent = ''; }, 3000);
+    }
+
+
+    // ==========================================
+    // 5. ADD TO CART (updates header count)
+    // ==========================================
+
+    let cartItems = 0;
+
+    function addToCart(productName) {
+      cartItems = cartItems + 1;
+      // Update the number shown in header
+      document.getElementById('cartCount').textContent = cartItems;
+    }
+
+
+    // ==========================================
+    // 6. DEAL COUNTDOWN TIMERS
+    // ==========================================
+
+    // Get all elements with class "timer"
+    const timers = document.querySelectorAll('.timer');
+
+    setInterval(function() {
+      timers.forEach(function(timer) {
+        // data-time holds remaining seconds
+        let seconds = parseInt(timer.getAttribute('data-time'));
+
+        if (seconds <= 0) return; // stop at 0
+
+        seconds = seconds - 1;
+        timer.setAttribute('data-time', seconds); // update stored value
+
+        // Convert total seconds → hours, minutes, seconds
+        let h = Math.floor(seconds / 3600);
+        let m = Math.floor((seconds % 3600) / 60);
+        let s = seconds % 60;
+
+        // pad with leading zero if needed (e.g. 5 → "05")
+        timer.textContent =
+          String(h).padStart(2, '0') + ':' +
+          String(m).padStart(2, '0') + ':' +
+          String(s).padStart(2, '0');
+      });
+    }, 1000); // runs every 1000ms = 1 second
+
+  </script>
+
+</body>
+</html>
